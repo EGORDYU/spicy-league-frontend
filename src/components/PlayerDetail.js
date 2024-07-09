@@ -1,24 +1,45 @@
 // src/components/PlayerDetail.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import players from '../data';
-
+import { fetchPlayer } from '../api';
 
 const PlayerDetail = () => {
-  const { id } = useParams();
-  const player = players.find(player => player.id === parseInt(id));
+    const { id } = useParams();
+    const [player, setPlayer] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-  if (!player) {
-    return <h2>Player not found</h2>;
-  }
+    useEffect(() => {
+        fetchPlayer(id)
+            .then(response => {
+                setPlayer(response.data);
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error('Error fetching player:', error);
+                setLoading(false);
+            });
+    }, [id]);
 
-  return (
-    <div>
-      <h1>{player.name}</h1>
-      <p>Age: {player.age}</p>
-      <p>Team: {player.team}</p>
-    </div>
-  );
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (!player) {
+        return <div>Player not found</div>;
+    }
+
+    return (
+        <div>
+            <h1>{player.name} </h1>
+            <img src={player.profimage} alt="Player description"/>
+            <p>StarCraft Rank: {player.starcraftrank}</p>
+            <p>StarCraft Race: {player.starcraftrace}</p>
+            <p>League Rank: {player.leaguerank}</p>
+            <p>League Role: {player.leaguerole}</p>
+            <p>League Secondary Role: {player.leaguesecondaryrole}</p>
+            <p>CS2 Elo: {player.cs2elo}</p>
+        </div>
+    );
 };
 
 export default PlayerDetail;

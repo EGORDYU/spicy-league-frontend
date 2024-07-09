@@ -1,8 +1,16 @@
-// src/components/Header.js
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import AuthContext from '../AuthContext';
 
 const Header = () => {
+  const { user, logoutUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logoutUser();
+    navigate('/login');
+  };
+
   return (
     <nav>
       <ul>
@@ -21,6 +29,15 @@ const Header = () => {
         <li>
           <Link to="/players">Players</Link>
         </li>
+        {user ? (
+          <li>
+            <button onClick={handleLogout}>Logout</button>
+          </li>
+        ) : (
+          <li>
+            <Link to="/login">Login</Link>
+          </li>
+        )}
       </ul>
     </nav>
   );
