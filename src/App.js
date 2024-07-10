@@ -9,7 +9,7 @@ import Header from './components/Header';
 import Login from './components/Login';
 import Register from './components/Register';
 import { AuthProvider } from './AuthContext';
-import PrivateRoute from './PrivateRoute';
+import Profile from './components/Profile';
 
 function App() {
     return (
@@ -20,11 +20,12 @@ function App() {
                     <Routes>
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
-                        <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
-                        <Route path="/info" element={<PrivateRoute><Info /></PrivateRoute>} />
-                        <Route path="/pchamps" element={<PrivateRoute><Pchamps /></PrivateRoute>} />
-                        <Route path="/cseason" element={<PrivateRoute><Cseason /></PrivateRoute>} />
-                        <Route path="/players/*" element={<PrivateRoute><Players /></PrivateRoute>} />
+                        <Route path="/" element={<Home />} />
+                        <Route path="/profile/:userId" element={<Profile />} />
+                        <Route path="/info" element={<Info />} />
+                        <Route path="/pchamps" element={<Pchamps />} />
+                        <Route path="/cseason" element={<Cseason />} />
+                        <Route path="/players/*" element={<Players />} />
                     </Routes>
                 </div>
             </AuthProvider>

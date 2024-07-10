@@ -1,45 +1,42 @@
-// src/components/PlayerDetail.js
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { fetchPlayer } from '../api';
+import { useParams, Link } from 'react-router-dom';
+import axios from 'axios';
 
 const PlayerDetail = () => {
-    const { id } = useParams();
-    const [player, setPlayer] = useState(null);
-    const [loading, setLoading] = useState(true);
+  const { id } = useParams();
+  const [player, setPlayer] = useState(null);
 
-    useEffect(() => {
-        fetchPlayer(id)
-            .then(response => {
-                setPlayer(response.data);
-                setLoading(false);
-            })
-            .catch(error => {
-                console.error('Error fetching player:', error);
-                setLoading(false);
-            });
-    }, [id]);
+  useEffect(() => {
+    const fetchPlayer = async () => {
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/api/players/${id}/`);
+        console.log('Player data:', response.data); // Debugging line
+        setPlayer(response.data);
+      } catch (error) {
+        console.error('Error fetching player:', error);
+      }
+    };
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
+    fetchPlayer();
+  }, [id]);
 
-    if (!player) {
-        return <div>Player not found</div>;
-    }
+  if (!player) {
+    return <div>Loading...</div>;
+  }
 
-    return (
-        <div>
-            <h1>{player.name} </h1>
-            <img src={player.profimage} alt="Player description"/>
-            <p>StarCraft Rank: {player.starcraftrank}</p>
-            <p>StarCraft Race: {player.starcraftrace}</p>
-            <p>League Rank: {player.leaguerank}</p>
-            <p>League Role: {player.leaguerole}</p>
-            <p>League Secondary Role: {player.leaguesecondaryrole}</p>
-            <p>CS2 Elo: {player.cs2elo}</p>
-        </div>
-    );
+  return (
+    <div>
+      <h1>{player.name}</h1>
+      <p>Starcraft Rank: {player.starcraftrank}</p>
+      <p>Starcraft Race: {player.starcraftrace}</p>
+      <p>League Rank: {player.leaguerank}</p>
+      <p>League Role: {player.leaguerole}</p>
+      <p>League Secondary Role: {player.leaguesecondaryrole}</p>
+      <p>CS2 Elo: {player.cs2elo}</p>
+      <p>Profile Image: <img src={player.profimage} alt={player.name} width="100" /></p>
+      {player.is_owner && <Link to={`/players/edit/${player.id}`}>Edit</Link>}
+    </div>
+  );
 };
 
 export default PlayerDetail;
