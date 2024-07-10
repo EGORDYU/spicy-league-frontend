@@ -14,11 +14,11 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         if (authTokens) {
-            localStorage.setItem('authTokens', JSON.stringify(authTokens));
             setUser(jwtDecode(authTokens.access));
+            localStorage.setItem('authTokens', JSON.stringify(authTokens));
         } else {
-            localStorage.removeItem('authTokens');
             setUser(null);
+            localStorage.removeItem('authTokens');
         }
     }, [authTokens]);
 

@@ -4,11 +4,12 @@ import { useParams } from 'react-router-dom';
 import AuthContext from '../AuthContext';
 
 const Profile = () => {
-  const { authTokens } = useContext(AuthContext);
+  const { authTokens, user } = useContext(AuthContext);
   const { userId } = useParams(); // This should actually be playerId
   const [player, setPlayer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isOwner, setIsOwner] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     starcraftrank: '',
@@ -32,7 +33,7 @@ const Profile = () => {
             Authorization: `Bearer ${authTokens.access}`,
           },
         });
-        console.log('Fetch Player Response:', response); // Log the response for debugging
+        console.log('Fetch Player Response:', response.data); // Log the response for debugging
         if (!response.data) {
           setError('No player data found');
           setLoading(false);
@@ -40,11 +41,18 @@ const Profile = () => {
         }
         setPlayer(response.data);
         setFormData(response.data);
+        setIsOwner(response.data.user === user.user_id);
+        console.log('Player User ID:', response.data.user); // Log the player owner's ID
+        console.log('Current User ID:', user.user_id); // Log the current user's ID
         setLoading(false);
       } catch (err) {
         console.error('Error fetching player data:', err.response); // Log the detailed error
         if (err.response) {
-          setError(`Error fetching player data: ${err.response.status} - ${err.response.data.detail}`);
+          if (err.response.status === 403) {
+            setError('You do not have permission to access this profile.');
+          } else {
+            setError(`Error fetching player data: ${err.response.status} - ${err.response.data.detail}`);
+          }
         } else {
           setError('Error fetching player data.');
         }
@@ -87,33 +95,33 @@ const Profile = () => {
 
   return (
     <div>
-      <h1>Edit Profile</h1>
+      <h1>{isOwner ? 'Edit Profile' : 'View Profile'}</h1>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Name:</label>
-          <input type="text" name="name" value={formData.name} onChange={handleChange} />
+          <input type="text" name="name" value={formData.name} onChange={handleChange} readOnly={!isOwner} />
         </div>
         <div>
           <label>Starcraft Rank:</label>
-          <input type="text" name="starcraftrank" value={formData.starcraftrank} onChange={handleChange} />
+          <input type="text" name="starcraftrank" value={formData.starcraftrank} onChange={handleChange} readOnly={!isOwner} />
         </div>
         <div>
           <label>Starcraft Race:</label>
-          <input type="text" name="starcraftrace" value={formData.starcraftrace} onChange={handleChange} />
+          <input type="text" name="starcraftrace" value={formData.starcraftrace} onChange={handleChange} readOnly={!isOwner} />
         </div>
         <div>
           <label>League Rank:</label>
-          <input type="text" name="leaguesecondaryrole" value={formData.leaguesecondaryrole} onChange={handleChange} />
+          <input type="text" name="leaguesecondaryrole" value={formData.leaguesecondaryrole} onChange={handleChange} readOnly={!isOwner} />
         </div>
         <div>
           <label>CS2 Elo:</label>
-          <input type="number" name="cs2elo" value={formData.cs2elo} onChange={handleChange} />
+          <input type="number" name="cs2elo" value={formData.cs2elo} onChange={handleChange} readOnly={!isOwner} />
         </div>
         <div>
           <label>Profile Image URL:</label>
-          <input type="text" name="profimage" value={formData.profimage} onChange={handleChange} />
+          <input type="text" name="profimage" value={formData.profimage} onChange={handleChange} readOnly={!isOwner} />
         </div>
-        <button type="submit">Save</button>
+        {isOwner && <button type="submit">Save</button>}
       </form>
     </div>
   );
