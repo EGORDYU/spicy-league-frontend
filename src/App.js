@@ -10,6 +10,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import { AuthProvider } from './AuthContext';
 import Profile from './components/Profile';
+import EventDetail from './components/EventDetail'; // Import the EventDetail component
 
 function App() {
     return (
@@ -26,6 +27,7 @@ function App() {
                         <Route path="/pchamps" element={<Pchamps />} />
                         <Route path="/cseason" element={<Cseason />} />
                         <Route path="/players/*" element={<Players />} />
+                        <Route path="/events/:id" element={<EventDetail />} /> {/* Add route for EventDetail */}
                     </Routes>
                 </div>
             </AuthProvider>
