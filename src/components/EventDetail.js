@@ -1,3 +1,4 @@
+// src/components/EventDetail.js
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
@@ -10,6 +11,7 @@ const EventDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isSignedUp, setIsSignedUp] = useState(false);
+  const [teams, setTeams] = useState([]);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -24,7 +26,18 @@ const EventDetail = () => {
       }
     };
 
+    const fetchTeams = async () => {
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/api/teams/?event=${id}`);
+        setTeams(response.data);
+      } catch (err) {
+        console.error('Error fetching teams:', err.response?.data || err.message);
+        setError('Error fetching teams.');
+      }
+    };
+
     fetchEvent();
+    fetchTeams();
   }, [id]);
 
   const handleSignup = async () => {
@@ -63,18 +76,39 @@ const EventDetail = () => {
 
       <h2>Signed up players</h2>
       {event.players.length > 0 ? (
+    <ul>
+      {event.players.map(user => (
+        user.players.map(player => (
+          <li key={player.id}>
+            <Link to={`/players/${player.id}`}>{player.name}</Link>
+          </li>
+        ))
+      ))}
+    </ul>
+  ) : (
+    <p>No players signed up yet.</p>
+  )}
+
+  <h2>Teams</h2>
+  {teams.length > 0 ? (
+    teams.map(team => (
+      <div key={team.id}>
+        <h3>{team.name}</h3>
         <ul>
-          {event.players.map(user => (
+          {team.players.map(user => (
             user.players.map(player => (
               <li key={player.id}>
                 <Link to={`/players/${player.id}`}>{player.name}</Link>
+                {console.log(player)}
               </li>
             ))
           ))}
         </ul>
-      ) : (
-        <p>No players signed up yet.</p>
-      )}
+      </div>
+    ))
+  ) : (
+    <p>No teams available.</p>
+  )}
     </div>
   );
 };
