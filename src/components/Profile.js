@@ -15,10 +15,29 @@ const Profile = () => {
     starcraftrank: '',
     starcraftrace: '',
     leaguerank: '',
+    leaguerole: '',
     leaguesecondaryrole: '',
     cs2elo: '',
     profimage: '',
   });
+
+  const starcraftRanks = [
+    'bronze', 'silver', 'gold', 'platinum', 'diamond', 'master', 'grandmaster', 'n/a'
+  ];
+
+  const starcraftRaces = [
+    'terran', 'zerg', 'protoss', 'n/a'
+  ];
+
+  const leagueRanks = [
+    'iron', 'bronze', 'silver', 'gold', 'platinum', 'emerald', 'diamond', 'master', 'grandmaster', 'challenger', 'n/a'
+  ];
+
+  const leagueRoles = [
+    'top', 'jungle', 'mid', 'adc', 'support', 'fill', 'n/a'
+  ];
+
+  const cs2EloChoices = Array.from({ length: 31 }, (_, i) => i * 1000);
 
   useEffect(() => {
     const fetchPlayer = async () => {
@@ -103,23 +122,55 @@ const Profile = () => {
         </div>
         <div>
           <label>Starcraft Rank:</label>
-          <input type="text" name="starcraftrank" value={formData.starcraftrank} onChange={handleChange} readOnly={!isOwner} />
+          <select name="starcraftrank" value={formData.starcraftrank} onChange={handleChange} disabled={!isOwner}>
+            {starcraftRanks.map(rank => (
+              <option key={rank} value={rank}>{rank}</option>
+            ))}
+          </select>
         </div>
         <div>
           <label>Starcraft Race:</label>
-          <input type="text" name="starcraftrace" value={formData.starcraftrace} onChange={handleChange} readOnly={!isOwner} />
+          <select name="starcraftrace" value={formData.starcraftrace} onChange={handleChange} disabled={!isOwner}>
+            {starcraftRaces.map(race => (
+              <option key={race} value={race}>{race}</option>
+            ))}
+          </select>
         </div>
         <div>
           <label>League Rank:</label>
-          <input type="text" name="leaguesecondaryrole" value={formData.leaguesecondaryrole} onChange={handleChange} readOnly={!isOwner} />
+          <select name="leaguerank" value={formData.leaguerank} onChange={handleChange} disabled={!isOwner}>
+            {leagueRanks.map(rank => (
+              <option key={rank} value={rank}>{rank}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label>League Role:</label>
+          <select name="leaguerole" value={formData.leaguerole} onChange={handleChange} disabled={!isOwner}>
+            {leagueRoles.map(role => (
+              <option key={role} value={role}>{role}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label>League Secondary Role:</label>
+          <select name="leaguesecondaryrole" value={formData.leaguesecondaryrole} onChange={handleChange} disabled={!isOwner}>
+            {leagueRoles.map(role => (
+              <option key={role} value={role}>{role}</option>
+            ))}
+          </select>
         </div>
         <div>
           <label>CS2 Elo:</label>
-          <input type="number" name="cs2elo" value={formData.cs2elo} onChange={handleChange} readOnly={!isOwner} />
+          <select name="cs2elo" value={formData.cs2elo} onChange={handleChange} disabled={!isOwner}>
+            {cs2EloChoices.map(elo => (
+              <option key={elo} value={elo}>{elo}</option>
+            ))}
+          </select>
         </div>
         <div>
           <label>Profile Image URL:</label>
-          <input type="text" name="profimage" value={formData.profimage} onChange={handleChange} readOnly={!isOwner} />
+          <input type="text" name="profimage" value="https://t4.ftcdn.net/jpg/00/64/67/27/360_F_64672736_U5kpdGs9keUll8CRQ3p3YaEv2M6qkVY5.jpg" onChange={handleChange} readOnly={!isOwner} />
         </div>
         {isOwner && <button type="submit">Save</button>}
       </form>
