@@ -3,7 +3,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import PlayersList from './PlayersList';
 import PlayerDetail from './PlayerDetail';
-import PlayerEdit from './PlayerEdit';
+
 
 const Players = () => {
   return (
@@ -11,7 +11,7 @@ const Players = () => {
       <Routes>
         <Route path="/" element={<PlayersList />} />
         <Route path=":id" element={<PlayerDetail />} />
-        <Route path="edit/:id" element={<PlayerEdit />} />
+
       </Routes>
     </div>
   );

@@ -7,14 +7,14 @@ const Header = () => {
   const { user, logoutUser } = useContext(AuthContext);
   const [playerId, setPlayerId] = useState(null);
   const navigate = useNavigate();
-
+  const apiUrl = process.env.REACT_APP_API_URL;
   useEffect(() => {
     const fetchPlayerId = async () => {
       if (user) {
         const token = localStorage.getItem('authTokens') ? JSON.parse(localStorage.getItem('authTokens')).access : null;
         if (token) {
           try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/players/`, {
+            const response = await axios.get(`${apiUrl}players/`, {
             
               headers: {
                 Authorization: `Bearer ${token}`,

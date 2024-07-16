@@ -6,6 +6,7 @@ import AuthContext from '../AuthContext';
 const Profile = () => {
   const { authTokens, user } = useContext(AuthContext);
   const { userId } = useParams(); // This should actually be playerId
+  const apiUrl = process.env.REACT_APP_API_URL;
   const [player, setPlayer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -47,7 +48,7 @@ const Profile = () => {
           setLoading(false);
           return;
         }
-        const response = await axios.get(`http://127.0.0.1:8000/api/players/${userId}/`, {
+        const response = await axios.get(`${apiUrl}players/${userId}/`, {
           headers: {
             Authorization: `Bearer ${authTokens.access}`,
           },
@@ -92,7 +93,7 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://127.0.0.1:8000/api/players/${player.id}/`, formData, {
+      await axios.put(`${apiUrl}players/${player.id}/`, formData, {
         headers: {
           Authorization: `Bearer ${authTokens.access}`,
         },

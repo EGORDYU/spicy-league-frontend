@@ -6,7 +6,7 @@ const Home = () => {
 
   return (
     <div>
-      <h1>Current Season</h1>
+      <h1>SPICY LEAGUE MOMENT</h1>
       <div>
         
       </div>

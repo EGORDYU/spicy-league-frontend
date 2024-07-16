@@ -5,6 +5,8 @@ import { jwtDecode } from 'jwt-decode';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+    const apiUrl = process.env.REACT_APP_API_URL;
+
     const [authTokens, setAuthTokens] = useState(() => 
         localStorage.getItem('authTokens') ? JSON.parse(localStorage.getItem('authTokens')) : null
     );
@@ -24,7 +26,7 @@ export const AuthProvider = ({ children }) => {
 
     const loginUser = async (username, password) => {
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/token/', { username, password });
+            const response = await axios.post(`${apiUrl}token/`, { username, password });
             setAuthTokens(response.data);
             setUser(jwtDecode(response.data.access));
             localStorage.setItem('authTokens', JSON.stringify(response.data));

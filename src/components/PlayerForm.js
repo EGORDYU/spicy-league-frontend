@@ -12,7 +12,7 @@ const PlayerForm = ({ player, onSave }) => {
     const [leagueSecondaryRole, setLeagueSecondaryRole] = useState(player ? player.leaguesecondaryrole : 'n/a');
     const [cs2Elo, setCs2Elo] = useState(player ? player.cs2elo : 0);
     const [profImage, setProfImage] = useState(player ? player.profimage : 'https://t4.ftcdn.net/jpg/00/64/67/27/360_F_64672736_U5kpdGs9keUll8CRQ3p3YaEv2M6qkVY5.jpg');
-
+    const apiUrl = process.env.REACT_APP_API_URL;
     const handleSubmit = async (e) => {
         e.preventDefault();
         const playerData = {
@@ -29,13 +29,13 @@ const PlayerForm = ({ player, onSave }) => {
         try {
             let response;
             if (player) {
-                response = await axios.put(`http://127.0.0.1:8000/api/players/${player.id}/`, playerData, {
+                response = await axios.put(`${apiUrl}players/${player.id}/`, playerData, {
                     headers: {
                         Authorization: `Bearer ${authTokens.access}`
                     }
                 });
             } else {
-                response = await axios.post('http://127.0.0.1:8000/api/players/', playerData, {
+                response = await axios.post(`${apiUrl}players/`, playerData, {
                     headers: {
                         Authorization: `Bearer ${authTokens.access}`
                     }

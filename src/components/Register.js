@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../axiosInstance';
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
@@ -15,12 +15,12 @@ const Register = () => {
     const [profimage, setProfimage] = useState('https://t4.ftcdn.net/jpg/00/64/67/27/360_F_64672736_U5kpdGs9keUll8CRQ3p3YaEv2M6qkVY5.jpg');
     const [error, setError] = useState(null);
     const navigate = useNavigate();
-
+    const apiUrl = process.env.REACT_APP_API_URL;
     const handleRegister = async (e) => {
         e.preventDefault();
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/register/', {
+            const response = await axiosInstance.post(`${apiUrl}register/`, {
                 username,
                 email,
                 password,
