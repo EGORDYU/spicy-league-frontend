@@ -8,6 +8,7 @@ const Header = () => {
   const [playerId, setPlayerId] = useState(null);
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
+
   useEffect(() => {
     const fetchPlayerId = async () => {
       if (user) {
@@ -15,12 +16,10 @@ const Header = () => {
         if (token) {
           try {
             const response = await axios.get(`${apiUrl}players/`, {
-            
               headers: {
                 Authorization: `Bearer ${token}`,
               },
             });
-            
             if (response.data.length > 0) {
               setPlayerId(response.data[0].id);
             }
@@ -39,44 +38,42 @@ const Header = () => {
   };
 
   return (
-    <nav>
-      <ul>
+    <nav className="bg-gray-800 p-4">
+      <ul className="flex space-x-4">
         <li>
-          <Link to="/">Home</Link>
+          <Link to="/" className="text-white hover:text-gray-400">Home</Link>
         </li>
         <li>
-          <Link to="/info">Info</Link>
+          <Link to="/info" className="text-white hover:text-gray-400">Info</Link>
         </li>
         <li>
-          <Link to="/pchamps">Previous Champions</Link>
+          <Link to="/pchamps" className="text-white hover:text-gray-400">Previous Champions</Link>
         </li>
         <li>
-          <Link to="/cseason">Current Season</Link>
+          <Link to="/cseason" className="text-white hover:text-gray-400">Current Season</Link>
         </li>
         <li>
-          <Link to="/players">Players</Link>
+          <Link to="/players" className="text-white hover:text-gray-400">Players</Link>
         </li>
         {user ? (
           <>
-
-              <li>
-                <Link to={`/profile/${playerId}`}>Profile</Link>
-              </li>
-
             <li>
-              <span>Welcome, {user.username}</span>
+              <Link to={`/profile/${playerId}`} className="text-white hover:text-gray-400">Profile</Link>
             </li>
             <li>
-              <button onClick={handleLogout}>Logout</button>
+              <span className="text-white">Welcome, {user.username}</span>
+            </li>
+            <li>
+              <button onClick={handleLogout} className="text-white hover:text-gray-400">Logout</button>
             </li>
           </>
         ) : (
           <>
             <li>
-              <Link to="/login">Login</Link>
+              <Link to="/login" className="text-white hover:text-gray-400">Login</Link>
             </li>
             <li>
-              <Link to="/register">Register</Link>
+              <Link to="/register" className="text-white hover:text-gray-400">Register</Link>
             </li>
           </>
         )}

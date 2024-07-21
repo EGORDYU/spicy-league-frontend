@@ -1,4 +1,3 @@
-// src/components/EventDetail.js
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
@@ -77,33 +76,33 @@ const EventDetail = () => {
 
       <h2>Signed up players</h2>
       {event.players.length > 0 ? (
-        <ul>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {event.players.map(user => (
             user.players.map(player => (
-              <li key={player.id}>
-                <Link to={`/players/${player.id}`}>{player.name}</Link>
+              <div key={player.id} className="border border-gray-300 rounded-lg p-4 bg-gray-100">
+                <Link to={`/players/${player.id}`} className="text-xl font-bold text-blue-600 hover:underline">{player.name}</Link>
                 {event.game === 'League of Legends' && (
-                  <ul>
-                    <li>League Rank: {player.leaguerank}</li>
-                    <li>League Role: {player.leaguesecondaryrole}</li>
-                    <li>League Secondary Role: {player.leaguesecondaryrole}</li>
+                  <ul className="list-none p-0">
+                    <li className="mb-2">League Rank: {player.leaguerank}</li>
+                    <li className="mb-2">League Role: {player.leaguerole}</li>
+                    <li className="mb-2">League Secondary Role: {player.leaguesecondaryrole}</li>
                   </ul>
                 )}
                 {event.game === 'Starcraft' && (
-                  <ul>
-                    <li>Starcraft Race: {player.starcraftrace}</li>
-                    <li>Starcraft Rank: {player.starcraftrank}</li>
+                  <ul className="list-none p-0">
+                    <li className="mb-2">Starcraft Race: {player.starcraftrace}</li>
+                    <li className="mb-2">Starcraft Rank: {player.starcraftrank}</li>
                   </ul>
                 )}
                 {event.game === 'Counterstrike 2' && (
-                  <ul>
-                    <li>CS2 Elo: {player.cs2elo}</li>
+                  <ul className="list-none p-0">
+                    <li className="mb-2">CS2 Elo: {player.cs2elo}</li>
                   </ul>
                 )}
-              </li>
+              </div>
             ))
           ))}
-        </ul>
+        </div>
       ) : (
         <p>No players signed up yet.</p>
       )}
@@ -112,34 +111,34 @@ const EventDetail = () => {
       {teams.length > 0 ? (
         teams.filter(team => team.event === parseInt(id)).map(team => (
           <div key={team.id}>
-            <h3>{team.name}</h3>
-            <ul>
+            <h3 className='team-name'>{team.name}</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
               {team.players.map(user => (
                 user.players.map(player => (
-                  <li key={player.id}>
-                    <Link to={`/players/${player.id}`}>{player.name}</Link>
+                  <div key={player.id} className="border border-gray-300 rounded-lg p-4 bg-gray-100">
+                    <Link to={`/players/${player.id}`} className="text-xl font-bold text-blue-600 hover:underline">{player.name}</Link>
                     {event.game === 'League of Legends' && (
-                      <ul>
-                        <li>League Rank: {player.leaguerank}</li>
-                        <li>League Role: {player.leaguerole}</li>
-                        <li>League Secondary Role: {player.leaguesecondaryrole}</li>
+                      <ul className="list-none p-0">
+                        <li className="mb-2">League Rank: {player.leaguerank}</li>
+                        <li className="mb-2">League Role: {player.leaguerole}</li>
+                        <li className="mb-2">League Secondary Role: {player.leaguesecondaryrole}</li>
                       </ul>
                     )}
                     {event.game === 'Starcraft' && (
-                      <ul>
-                        <li>Starcraft Race: {player.starcraftrace}</li>
-                        <li>Starcraft Rank: {player.starcraftrank}</li>
+                      <ul className="list-none p-0">
+                        <li className="mb-2">Starcraft Race: {player.starcraftrace}</li>
+                        <li className="mb-2">Starcraft Rank: {player.starcraftrank}</li>
                       </ul>
                     )}
                     {event.game === 'Counterstrike 2' && (
-                      <ul>
-                        <li>CS2 Elo: {player.cs2elo}</li>
+                      <ul className="list-none p-0">
+                        <li className="mb-2">CS2 Elo: {player.cs2elo}</li>
                       </ul>
                     )}
-                  </li>
+                  </div>
                 ))
               ))}
-            </ul>
+            </div>
           </div>
         ))
       ) : (
