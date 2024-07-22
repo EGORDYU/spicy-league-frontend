@@ -307,7 +307,9 @@ const previousSeasonsData = [
             "Most Improved Player": "RyanSC2",
             "Greenest Goblin": "EGOR",
             "Best Play Of Finals": "Ciki",
+            
           },
+        best_play_vod: "https://clips.twitch.tv/SmilingReliableWombatDogFace-5zNOoQVZn56S5mkP",
         draft_vod: "https://www.twitch.tv/videos/2037821064"
       },
 

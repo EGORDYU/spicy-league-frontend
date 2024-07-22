@@ -27,7 +27,7 @@ const Pchamps = () => {
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md mb-8">
               <h3 className="text-2xl font-semibold mb-2 text-green-600">Winner</h3>
-              <p className="text-gray-700 mb-4">{seasonData.winner}</p>
+              <p className="text-gray-700 mb-4 winner-team-name">{seasonData.winner}</p>
               <h3 className="text-2xl font-semibold mb-2 text-yellow-600">Prize Pool</h3>
               <p className="text-gray-700">{seasonData.prizepool}</p>
             </div>
@@ -39,6 +39,11 @@ const Pchamps = () => {
                     <li key={key}>{key}: {value}</li>
                   ))}
                 </ul>
+                {seasonData.best_play_vod && (
+                  <a href={seasonData.best_play_vod} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                    Best Play VOD
+                  </a>
+                )}
               </div>
             )}
             {seasonData.draft_vod && (
@@ -49,7 +54,6 @@ const Pchamps = () => {
                 </a>
               </div>
             )}
-
           </div>
         ))}
       </div>

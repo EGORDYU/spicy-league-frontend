@@ -68,3 +68,18 @@ button:hover {
 .team-name {
   font-size: 2rem;
 }
+
+/* src/components/Pchamps.css */
+
+.winner-team-name {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ffd900;
+  animation: blink 1s step-start infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 50%;
+  }
+}

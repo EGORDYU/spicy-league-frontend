@@ -46,13 +46,12 @@ const EventDetail = () => {
       return;
     }
     try {
-      const response = await axios.post(`${apiUrl}events/${id}/signup/`, {}, {
+      await axios.post(`${apiUrl}events/${id}/signup/`, {}, {
         headers: {
           Authorization: `Bearer ${authTokens.access}`,
         },
       });
       setIsSignedUp(true);
-      // Fetch event again to update the list of signed-up players
       const updatedEvent = await axios.get(`${apiUrl}events/${id}/`);
       setEvent(updatedEvent.data);
     } catch (err) {
@@ -63,6 +62,36 @@ const EventDetail = () => {
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
+
+  const renderPlayerDetails = (player) => (
+    <div key={player.id} className="border border-gray-300 rounded-lg p-4 bg-gray-100">
+      <Link to={`/players/${player.id}`} className="text-xl font-bold text-blue-600 hover:underline">{player.name}</Link>
+      <ul className="list-none p-0">
+        {event.game === 'League of Legends' || event.game === 'Combination' ? (
+          <>
+            <li className="mb-2">League Rank: {player.leaguerank}</li>
+            <li className="mb-2">League Role: {player.leaguerole}</li>
+            <li className="mb-2">League Secondary Role: {player.leaguesecondaryrole}</li>
+          </>
+        ) : null}
+        {event.game === 'Starcraft' || event.game === 'Combination' ? (
+          <>
+            <li className="mb-2">Starcraft Race: {player.starcraftrace}</li>
+            <li className="mb-2">Starcraft Rank: {player.starcraftrank}</li>
+          </>
+        ) : null}
+        {event.game === 'Counterstrike 2' || event.game === 'Combination' ? (
+          <li className="mb-2">CS2 Elo: {player.cs2elo}</li>
+        ) : null}
+      </ul>
+    </div>
+  );
+
+  const renderPlayerName = (player) => (
+    <li key={player.id} className="mb-2">
+      <Link to={`/players/${player.id}`} className="text-xl font-bold text-blue-600 hover:underline">{player.name}</Link>
+    </li>
+  );
 
   return (
     <div>
@@ -78,29 +107,7 @@ const EventDetail = () => {
       {event.players.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {event.players.map(user => (
-            user.players.map(player => (
-              <div key={player.id} className="border border-gray-300 rounded-lg p-4 bg-gray-100">
-                <Link to={`/players/${player.id}`} className="text-xl font-bold text-blue-600 hover:underline">{player.name}</Link>
-                {event.game === 'League of Legends' && (
-                  <ul className="list-none p-0">
-                    <li className="mb-2">League Rank: {player.leaguerank}</li>
-                    <li className="mb-2">League Role: {player.leaguerole}</li>
-                    <li className="mb-2">League Secondary Role: {player.leaguesecondaryrole}</li>
-                  </ul>
-                )}
-                {event.game === 'Starcraft' && (
-                  <ul className="list-none p-0">
-                    <li className="mb-2">Starcraft Race: {player.starcraftrace}</li>
-                    <li className="mb-2">Starcraft Rank: {player.starcraftrank}</li>
-                  </ul>
-                )}
-                {event.game === 'Counterstrike 2' && (
-                  <ul className="list-none p-0">
-                    <li className="mb-2">CS2 Elo: {player.cs2elo}</li>
-                  </ul>
-                )}
-              </div>
-            ))
+            user.players.map(player => renderPlayerDetails(player))
           ))}
         </div>
       ) : (
@@ -109,38 +116,18 @@ const EventDetail = () => {
 
       <h2>Teams</h2>
       {teams.length > 0 ? (
-        teams.filter(team => team.event === parseInt(id)).map(team => (
-          <div key={team.id}>
-            <h3 className='team-name'>{team.name}</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {team.players.map(user => (
-                user.players.map(player => (
-                  <div key={player.id} className="border border-gray-300 rounded-lg p-4 bg-gray-100">
-                    <Link to={`/players/${player.id}`} className="text-xl font-bold text-blue-600 hover:underline">{player.name}</Link>
-                    {event.game === 'League of Legends' && (
-                      <ul className="list-none p-0">
-                        <li className="mb-2">League Rank: {player.leaguerank}</li>
-                        <li className="mb-2">League Role: {player.leaguerole}</li>
-                        <li className="mb-2">League Secondary Role: {player.leaguesecondaryrole}</li>
-                      </ul>
-                    )}
-                    {event.game === 'Starcraft' && (
-                      <ul className="list-none p-0">
-                        <li className="mb-2">Starcraft Race: {player.starcraftrace}</li>
-                        <li className="mb-2">Starcraft Rank: {player.starcraftrank}</li>
-                      </ul>
-                    )}
-                    {event.game === 'Counterstrike 2' && (
-                      <ul className="list-none p-0">
-                        <li className="mb-2">CS2 Elo: {player.cs2elo}</li>
-                      </ul>
-                    )}
-                  </div>
-                ))
-              ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          {teams.filter(team => team.event === parseInt(id)).map(team => (
+            <div key={team.id} className="border border-gray-300 rounded-lg p-4 bg-white shadow-md">
+              <h3 className="team-name text-2xl font-semibold mb-4">{team.name}</h3>
+              <ul className="list-disc pl-5 space-y-1 text-gray-700">
+                {team.players.map(user => (
+                  user.players.map(player => renderPlayerName(player))
+                ))}
+              </ul>
             </div>
-          </div>
-        ))
+          ))}
+        </div>
       ) : (
         <p>No teams available.</p>
       )}
