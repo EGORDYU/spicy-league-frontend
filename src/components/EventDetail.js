@@ -11,6 +11,7 @@ const EventDetail = () => {
   const [error, setError] = useState('');
   const [isSignedUp, setIsSignedUp] = useState(false);
   const [teams, setTeams] = useState([]);
+  const [sortCriteria, setSortCriteria] = useState(null);
   const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
@@ -40,6 +41,10 @@ const EventDetail = () => {
     fetchTeams();
   }, [id]);
 
+  useEffect(() => {
+    console.log('Sort criteria changed:', sortCriteria);
+  }, [sortCriteria]);
+
   const handleSignup = async () => {
     if (!authTokens) {
       setError('You need to be logged in to sign up for an event.');
@@ -63,29 +68,140 @@ const EventDetail = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
+  const renderRaceIcon = (race) => {
+    switch (race) {
+      case 'zerg':
+        return <img src="/images/zerg-icon.png" alt="Zerg" className="inline-block w-4 h-4 ml-2" />;
+      case 'terran':
+        return <img src="/images/terran-icon.png" alt="Terran" className="inline-block w-4 h-4 ml-2" />;
+      case 'protoss':
+        return <img src="/images/protoss-icon.png" alt="Protoss" className="inline-block w-4 h-4 ml-2" />;
+      default:
+        return null;
+    }
+  };
+
+  const renderSc2RankIcon = (sc2rank) => {
+    switch (sc2rank) {
+      case 'bronze':
+        return <img src="/images/sc2bronze-icon.png" alt="Bronze" className="inline-block w-4 h-4 ml-2" />;
+      case 'silver':
+        return <img src="/images/sc2silver-icon.png" alt="Silver" className="inline-block w-4 h-4 ml-2" />;
+      case 'gold':
+        return <img src="/images/sc2gold-icon.png" alt="Gold" className="inline-block w-4 h-4 ml-2" />;
+      case 'platinum':
+        return <img src="/images/sc2platinum-icon.png" alt="Platinum" className="inline-block w-4 h-4 ml-2" />;
+      case 'diamond':
+        return <img src="/images/sc2diamond-icon.png" alt="Diamond" className="inline-block w-4 h-4 ml-2" />;
+      case 'master':
+        return <img src="/images/sc2master-icon.png" alt="Master" className="inline-block w-4 h-4 ml-2" />;
+      case 'grandmaster':
+        return <img src="/images/sc2grandmaster-icon.png" alt="Grandmaster" className="inline-block w-4 h-4 ml-2" />;
+      default:
+        return null;
+    }
+  };
+
+  const renderLeagueRank = (leaguerank) => {
+    switch (leaguerank) {
+      case 'iron':
+        return <img src="/images/loliron-icon.png" alt="Iron" className="inline-block w-4 h-4 ml-2" />;
+      case 'bronze':
+        return <img src="/images/lolbronze-icon.png" alt="Bronze" className="inline-block w-4 h-4 ml-2" />;
+      case 'silver':
+        return <img src="/images/lolsilver-icon.png" alt="Silver" className="inline-block w-4 h-4 ml-2" />;
+      case 'gold':
+        return <img src="/images/lolgold-icon.png" alt="Gold" className="inline-block w-4 h-4 ml-2" />;
+      case 'platinum':
+        return <img src="/images/lolplatinum-icon.png" alt="Platinum" className="inline-block w-4 h-4 ml-2" />;
+      case 'emerald':
+        return <img src="/images/lolemerald-icon.png" alt="Emerald" className="inline-block w-4 h-4 ml-2" />;
+      case 'diamond':
+        return <img src="/images/loldiamond-icon.png" alt="Diamond" className="inline-block w-4 h-4 ml-2" />;
+      case 'master':
+        return <img src="/images/lolmaster-icon.png" alt="Master" className="inline-block w-4 h-4 ml-2" />;
+      case 'grandmaster':
+        return <img src="/images/lolgrandmaster-icon.png" alt="Grandmaster" className="inline-block w-4 h-4 ml-2" />;
+      case 'challenger':
+        return <img src="/images/lolchallenger-icon.png" alt="Challenger" className="inline-block w-4 h-4 ml-2" />;
+      default:
+        return null;
+    }
+  };
+
+  const renderLeagueRole = (leaguerole) => {
+    switch (leaguerole) {
+      case 'top':
+        return <img src="/images/loltop-icon.png" alt="Top" className="inline-block w-4 h-4 ml-2" />;
+      case 'jungle':
+        return <img src="/images/loljungle-icon.png" alt="Jungle" className="inline-block w-4 h-4 ml-2" />;
+      case 'mid':
+        return <img src="/images/lolmid-icon.png" alt="Mid" className="inline-block w-4 h-4 ml-2" />;
+      case 'adc':
+        return <img src="/images/loladc-icon.png" alt="Adc" className="inline-block w-4 h-4 ml-2" />;
+      case 'support':
+        return <img src="/images/lolsupport-icon.png" alt="Support" className="inline-block w-4 h-4 ml-2" />;
+      case 'fill':
+        return <img src="/images/lolfill-icon.png" alt="Fill" className="inline-block w-4 h-4 ml-2" />;
+      default:
+        return null;
+    }
+  };
+
+  // Sorting function
+  const sortPlayers = (players) => {
+    if (!sortCriteria) return players;
+  
+    if (sortCriteria === 'league_rank') {
+      console.log('Sorting by league rank');
+      return players.slice().sort((a, b) => {
+        const ranks = ['challenger', 'grandmaster', 'master', 'diamond', 'emerald', 'platinum', 'gold', 'silver', 'bronze', 'iron', 'n/a'];
+        const rankA = a.leaguerank ? a.leaguerank.toLowerCase() : 'n/a';
+        const rankB = b.leaguerank ? b.leaguerank.toLowerCase() : 'n/a';
+        return ranks.indexOf(rankA) - ranks.indexOf(rankB);
+      });
+    }
+  
+    if (sortCriteria === 'cs2_elo') {
+      console.log('Sorting by CS2 Elo');
+      return players.slice().sort((a, b) => {
+        const eloA = (a.cs2elo === 'n/a' || a.cs2elo === null || a.cs2elo === undefined) ? -Infinity : a.cs2elo;
+        const eloB = (b.cs2elo === 'n/a' || b.cs2elo === null || b.cs2elo === undefined) ? -Infinity : b.cs2elo;
+        return eloB - eloA;
+      });
+    }
+  
+    return players;
+  };
+  
+
   const renderPlayerDetails = (player) => (
-    <div key={player.id} className="border border-gray-300 rounded-lg p-4 bg-gray-100">
-      <Link to={`/players/${player.id}`} className="text-xl font-bold text-blue-600 hover:underline">{player.name}</Link>
-      <ul className="list-none p-0">
-        {event.game === 'League of Legends' || event.game === 'Combination' ? (
+    <div key={player.id} className="border border-gray-300 rounded-lg p-1 bg-gray-100 flex flex-col items-start w-48">
+      <Link to={`/players/${player.id}`} className="text-xl font-bold text-blue-600 hover:underline mb-1">{player.name}</Link>
+      <ul className="list-none p-0 text-sm space-y-1">
+        {(event.game.includes('LoL')) && (
           <>
-            <li className="mb-2">League Rank: {player.leaguerank}</li>
-            <li className="mb-2">League Role: {player.leaguerole}</li>
-            <li className="mb-2">League Secondary Role: {player.leaguesecondaryrole}</li>
+            <li className="flex items-center">LoL Rank: {player.leaguerank} {renderLeagueRank(player.leaguerank)}</li>
+            <li className="flex items-center">Role: {player.leaguerole} {renderLeagueRole(player.leaguerole)}</li>
+            <li className="flex items-center">Secondary Role: {player.leaguesecondaryrole} {renderLeagueRole(player.leaguesecondaryrole)}</li>
           </>
-        ) : null}
-        {event.game === 'Starcraft' || event.game === 'Combination' ? (
+        )}
+        {(event.game.includes('SC2')) && (
           <>
-            <li className="mb-2">Starcraft Race: {player.starcraftrace}</li>
-            <li className="mb-2">Starcraft Rank: {player.starcraftrank}</li>
+            <li className="flex items-center">SC2 Rank: {player.starcraftrank} {renderSc2RankIcon(player.starcraftrank)}</li>
+            <li className="flex items-center">Race: {player.starcraftrace} {renderRaceIcon(player.starcraftrace)}</li>
           </>
-        ) : null}
-        {event.game === 'Counterstrike 2' || event.game === 'Combination' ? (
-          <li className="mb-2">CS2 Elo: {player.cs2elo}</li>
-        ) : null}
+        )}
+        {(event.game.includes('CS2')) && (
+          <li className="flex items-center">CS2 Elo: {player.cs2elo}</li>
+        )}
       </ul>
     </div>
   );
+  
+  
+
+  
 
   const renderPlayerName = (player) => (
     <li key={player.id} className="mb-2">
@@ -103,16 +219,27 @@ const EventDetail = () => {
         {isSignedUp ? 'Signed Up' : 'Sign Up'}
       </button>
 
+      <div className="flex justify-end mt-4">
+        <select
+          value={sortCriteria}
+          onChange={(e) => setSortCriteria(e.target.value)}
+          className="border border-gray-300 rounded-lg p-2"
+        >
+          <option value="">Sort By</option>
+          <option value="league_rank">League Rank</option>
+          <option value="cs2_elo">CS2 Elo</option>
+        </select>
+      </div>
+
       <h2>Signed up players</h2>
       {event.players.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          {event.players.map(user => (
-            user.players.map(player => renderPlayerDetails(player))
-          ))}
-        </div>
-      ) : (
-        <p>No players signed up yet.</p>
-      )}
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-9 gap-0">
+    {sortPlayers(event.players.flatMap(user => user.players)).map(player => renderPlayerDetails(player))}
+  </div>
+) : (
+  <p>No players signed up yet.</p>
+)}
+
 
       <h2>Teams</h2>
       {teams.length > 0 ? (
@@ -121,9 +248,7 @@ const EventDetail = () => {
             <div key={team.id} className="border border-gray-300 rounded-lg p-4 bg-white shadow-md">
               <h3 className="team-name text-2xl font-semibold mb-4">{team.name}</h3>
               <ul className="list-disc pl-5 space-y-1 text-gray-700">
-                {team.players.map(user => (
-                  user.players.map(player => renderPlayerName(player))
-                ))}
+                {team.players.flatMap(user => user.players).map(player => renderPlayerName(player))}
               </ul>
             </div>
           ))}
