@@ -8,8 +8,8 @@
 /* Custom styles */
 h1 {
   font-size: 4rem; /* Adjust size as needed */
-  color: black;
-  text-shadow: 2px 2px 0 red; /* Red outline */
+  color: rgb(17, 0, 255);
+  text-shadow: 2px 2px 0 rgb(228, 174, 174); /* Red outline */
 }
 h2{
   font-size: 2rem;

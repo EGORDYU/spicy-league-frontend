@@ -20,22 +20,24 @@ const Cseason = () => {
   }, []);
 
   return (
-    <div>
-      <h1>Current Events</h1>
-      <div>
-        {events.length > 0 ? (
-          events.map((event) => (
-            <div key={event.id}>
-              <h2>
-                <Link to={`/events/${event.id}`}>{event.name}</Link>
-              </h2>
-              <p>Date: {event.date}</p>
-              <p>Game: {event.game}</p>
-            </div>
-          ))
-        ) : (
-          <p>No events available.</p>
-        )}
+    <div className="min-h-screen bg-gray-100 py-10">
+      <div className="container mx-auto px-4">
+        <h1 className="text-4xl font-bold text-center mb-10">Current Events</h1>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {events.length > 0 ? (
+            events.map((event) => (
+              <div key={event.id} className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <h2 className="text-2xl font-bold mb-2 text-blue-600">
+                  <Link to={`/events/${event.id}`}>{event.name}</Link>
+                </h2>
+                <p className="text-gray-700">Date: {new Date(event.date).toLocaleDateString()}</p>
+                <p className="text-gray-700">Game: {event.game}</p>
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-600">No events available.</p>
+          )}
+        </div>
       </div>
     </div>
   );
