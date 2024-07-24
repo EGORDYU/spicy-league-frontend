@@ -65,6 +65,27 @@ const EventDetail = () => {
     }
   };
 
+  const cancelSignup = async () => {
+    if (!authTokens) {
+      setError('You need to be logged in to cancel signup for an event.');
+      return;
+    }
+    try {
+      await axios.post(`${apiUrl}events/${id}/cancel_signup/`, {}, {
+        headers: {
+          Authorization: `Bearer ${authTokens.access}`,
+        },
+      });
+      setIsSignedUp(false);
+      const updatedEvent = await axios.get(`${apiUrl}events/${id}/`);
+      setEvent(updatedEvent.data);
+    } catch (err) {
+      console.error('Error canceling signup for event:', err.response?.data || err.message);
+      setError('Error canceling signup for event.');
+    }
+  };
+  
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
@@ -170,13 +191,22 @@ const EventDetail = () => {
         return eloB - eloA;
       });
     }
-  
+    
+    if (sortCriteria === 'doodadlevel') {
+      console.log('Sorting by doodad');
+      return players.slice().sort((a, b) => {
+        const skill = ['expert', 'experienced', 'new']
+        const skillA = a.doodadlevel ? a.doodadlevel.toLowerCase() : 'n/a';
+        const skillB = b.doodadlevel ? b.doodadlevel.toLowerCase() : 'n/a';
+        return skill.indexOf(skillA) - skill.indexOf(skillB);
+      })
+    }
     return players;
   };
   
 
   const renderPlayerDetails = (player) => (
-    <div key={player.id} className="border border-gray-300 rounded-lg p-1 bg-gray-100 flex flex-col items-start w-48">
+    <div key={player.id} className="border border-gray-300 rounded-lg p-1 bg-gray-700 flex flex-col items-start w-48">
       <Link to={`/players/${player.id}`} className="text-xl font-bold text-blue-600 hover:underline mb-1">{player.name}</Link>
       <ul className="list-none p-0 text-sm space-y-1">
         {(event.game.includes('LoL')) && (
@@ -194,6 +224,9 @@ const EventDetail = () => {
         )}
         {(event.game.includes('CS2')) && (
           <li className="flex items-center">CS2 Elo: {player.cs2elo}</li>
+        )}
+        {(event.game.includes('Doodad')) && (
+          <li className='flex items-center'>Doodad Skill: {player.doodadlevel}</li>
         )}
       </ul>
     </div>
@@ -215,31 +248,38 @@ const EventDetail = () => {
       <p>Date: {event.date}</p>
       <p>Game: {event.game}</p>
       <p>Team Size: {event.teamsize}</p>
-      <button onClick={handleSignup} disabled={isSignedUp}>
-        {isSignedUp ? 'Signed Up' : 'Sign Up'}
+
+
+      <button
+        onClick={isSignedUp ? cancelSignup : handleSignup}
+        className={`mt-4 w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
+          isSignedUp ? 'bg-red-700 hover:bg-red-800' : 'bg-blue-700 hover:bg-blue-800'
+        }`}
+      >
+        {isSignedUp ? 'Cancel Signup' : 'Sign Up'}
       </button>
 
       <div className="flex justify-end mt-4">
         <select
           value={sortCriteria}
           onChange={(e) => setSortCriteria(e.target.value)}
-          className="border border-gray-300 rounded-lg p-2"
+          className="border border-gray-300  bg-gray-500 rounded-lg p-2"
         >
           <option value="">Sort By</option>
           <option value="league_rank">League Rank</option>
           <option value="cs2_elo">CS2 Elo</option>
+          <option value="doodadlevel">Doodad Skill</option>
         </select>
       </div>
 
       <h2>Signed up players</h2>
       {event.players.length > 0 ? (
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-9 gap-0">
-    {sortPlayers(event.players.flatMap(user => user.players)).map(player => renderPlayerDetails(player))}
-  </div>
-) : (
-  <p>No players signed up yet.</p>
-)}
-
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-9 gap-0">
+          {sortPlayers(event.players.flatMap(user => user.players)).map(player => renderPlayerDetails(player))}
+        </div>
+      ) : (
+        <p>No players signed up yet.</p>
+      )}
 
       <h2>Teams</h2>
       {teams.length > 0 ? (

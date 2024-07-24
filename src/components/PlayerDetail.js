@@ -54,6 +54,8 @@ const PlayerDetail = () => {
         return <img src="/images/sc2master-icon.png" alt="Master" className="inline-block w-6 h-6 ml-2" />
       case 'grandmaster':
         return <img src="/images/sc2grandmaster-icon.png" alt="Grandmaster" className="inline-block w-6 h-6 ml-2" />
+      default:
+        return null;
     }
   }
 
@@ -79,6 +81,8 @@ const PlayerDetail = () => {
         return <img src="/images/lolgrandmaster-icon.png" alt="Grandmaster" className="inline-block w-6 h-6 ml-2" />
       case 'challenger':
         return <img src="/images/lolchallenger-icon.png" alt="Challenger" className="inline-block w-6 h-6 ml-2" />
+      default:
+        return null;
     }
   }
 
@@ -96,34 +100,42 @@ const PlayerDetail = () => {
         return <img src="/images/lolsupport-icon.png" alt="Support" className="inline-block w-6 h-6 ml-2" />
       case 'fill':
         return <img src="/images/lolfill-icon.png" alt="Fill" className="inline-block w-6 h-6 ml-2" />
-
+      default:
+        return null;
     }
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <div className="flex items-center mb-6">
-        <img src={player.profimage} alt={player.name} className="w-24 h-24 rounded-full mr-4" />
-        <h1 className="text-3xl font-bold">{player.name}</h1>
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="max-w-4xl mx-auto p-6 bg-gray-700 shadow-lg rounded-lg flame-border" >
+        <div className="flex items-start">
+          <div className="mr-6">
+            <img src={player.profimage} alt={player.name} className="w-48 h-48 rounded-lg mb-4 object-cover" />
+            <h1 className="text-3xl font-bold text-white">{player.name}</h1>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-grow">
+            <div className="bg-blue-900 p-6 rounded-lg shadow-md">
+              <h2 className="text-2xl font-bold mb-2 text-white">League of Legends</h2>
+              <p className="text-white">Rank: {player.leaguerank} {renderLeagueRank(player.leaguerank)}</p>
+              <p className="text-white">Role: {player.leaguerole} {renderLeagueRole(player.leaguerole)}</p>
+              <p className="text-white">Secondary Role: {player.leaguesecondaryrole} {renderLeagueRole(player.leaguesecondaryrole)}</p>
+            </div>
+            <div className="bg-green-900 p-6 rounded-lg shadow-md">
+              <h2 className="text-2xl font-bold mb-2 text-white">Starcraft 2</h2>
+              <p className="text-white">Rank: {player.starcraftrank} {renderSc2RankIcon(player.starcraftrank)}</p>
+              <p className="text-white">Race: {player.starcraftrace} {renderRaceIcon(player.starcraftrace)}</p>
+            </div>
+            <div className="bg-red-900 p-6 rounded-lg shadow-md">
+              <h2 className="text-2xl font-bold mb-2 text-white">Counter-Strike 2</h2>
+              <p className="text-white">Elo: {player.cs2elo}</p>
+            </div>
+            <div className="bg-yellow-900 p-6 rounded-lg shadow-md">
+              <h2 className="text-2xl font-bold mb-2 text-white">Doodad Skill</h2>
+              <p className="text-white">{player.doodadlevel.toUpperCase()}</p>
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-blue-100 p-4 rounded-lg shadow-md">
-          <h2 className="text-2xl font-bold mb-2">League of Legends</h2>
-          <p>Rank: {player.leaguerank} {renderLeagueRank(player.leaguerank)}</p>
-          <p>Role: {player.leaguerole} {renderLeagueRole(player.leaguerole)}</p>
-          <p>Secondary Role: {player.leaguesecondaryrole} {renderLeagueRole(player.leaguesecondaryrole)}</p>
-        </div>
-        <div className="bg-green-100 p-4 rounded-lg shadow-md">
-          <h2 className="text-2xl font-bold mb-2">Starcraft 2</h2>
-          <p>Rank: {player.starcraftrank} {renderSc2RankIcon(player.starcraftrank)}</p>
-          <p>Race: {player.starcraftrace} {renderRaceIcon(player.starcraftrace)}</p>
-        </div>
-        <div className="bg-red-100 p-4 rounded-lg shadow-md">
-          <h2 className="text-2xl font-bold mb-2">Counter-Strike 2</h2>
-          <p>Elo: {player.cs2elo}</p>
-        </div>
-      </div>
-      {/* {player.is_owner && <Link to={`/players/edit/${player.id}`} className="text-blue-500 hover:underline mt-4 inline-block">Edit</Link>} */}
     </div>
   );
 };

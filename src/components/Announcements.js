@@ -1,12 +1,12 @@
 // src/components/About.js
 import React from 'react';
 
-const Info = () => {
+const Announcements = () => {
   return (
     <div>
-      <h1>Info Page</h1>
+      <h1>Announcements</h1>
     </div>
   );
 };
 
-export default Info;
+export default Announcements;

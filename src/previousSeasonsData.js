@@ -172,7 +172,7 @@ const previousSeasonsData = [
           },
           {
             name: "Team Future",
-            players: ["Future", "There", "Is", "No", "Info"]
+            players: ["Future", "Cuddlebear", "Lucky", "LiquidFluid", "Shmubdub"]
           },
           {
             name: "Team Early",

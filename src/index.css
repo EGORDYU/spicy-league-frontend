@@ -6,18 +6,14 @@
 
 
 /* Custom styles */
-h1 {
-  font-size: 4rem; /* Adjust size as needed */
-  color: rgb(17, 0, 255);
-  text-shadow: 2px 2px 0 rgb(228, 174, 174); /* Red outline */
-}
+
 h2{
   font-size: 2rem;
 }
-a {
-  color: blue; /* Default link color */
-  text-decoration: underline; /* Remove underline */
-}
+/* a {
+  color: blue; 
+  text-decoration: underline; 
+} */
 button {
   background-color: #4CAF50; /* Green background */
   border: none; /* Remove borders */
@@ -82,4 +78,38 @@ button:hover {
   50% {
     opacity: 50%;
   }
+}
+
+@keyframes flame {
+  0% {
+    box-shadow: 0 0 10px 0 rgba(255, 69, 0, 0.8), 0 0 20px 0 rgba(255, 140, 0, 0.6), 0 0 30px 0 rgba(255, 69, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px 0 rgba(255, 69, 0, 0.8), 0 0 40px 0 rgba(255, 140, 0, 0.6), 0 0 60px 0 rgba(255, 69, 0, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 10px 0 rgba(255, 69, 0, 0.8), 0 0 20px 0 rgba(255, 140, 0, 0.6), 0 0 30px 0 rgba(255, 69, 0, 0.4);
+  }
+}
+
+.flame-border {
+  position: relative;
+  border: 2px solid transparent;
+  animation: flame 6s infinite;
+  padding: 5px;
+  border-radius: 8px;
+}
+
+.flame-border::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  bottom: -5px;
+  left: -5px;
+  border-radius: 10px;
+  z-index: -1;
+  background: linear-gradient(45deg, rgba(255, 69, 0, 0.8), rgba(255, 140, 0, 0.6));
+  filter: blur(15px);
+  animation: flame 2s infinite;
 }

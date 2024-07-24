@@ -22,26 +22,26 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
+        <div className="min-h-screen flex items-center justify-center">
+            <div className="max-w-md w-full bg-gray-700 p-8 rounded-lg shadow-md">
                 <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
                 <form onSubmit={handleLogin}>
                     <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Username</label>
+                        <label className="block  text-sm font-bold mb-2 text-white">Username</label>
                         <input
                             type="text"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-500"
                         />
                     </div>
                     <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                        <label className="block  text-sm font-bold mb-2 text-white">Password</label>
                         <input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-500"
                         />
                     </div>
                     <button

@@ -13,6 +13,7 @@ const Register = () => {
     const [leaguesecondaryrole, setLeaguesecondaryrole] = useState('n/a');
     const [cs2elo, setCs2elo] = useState(0);
     const [profimage, setProfimage] = useState('https://t4.ftcdn.net/jpg/00/64/67/27/360_F_64672736_U5kpdGs9keUll8CRQ3p3YaEv2M6qkVY5.jpg');
+    const [doodadlevel, setDoodadlevel] = useState('new'); // New state for doodadlevel
     const [error, setError] = useState(null);
     const navigate = useNavigate();
     const apiUrl = process.env.REACT_APP_API_URL;
@@ -31,7 +32,8 @@ const Register = () => {
                 leaguerole,
                 leaguesecondaryrole,
                 cs2elo,
-                profimage
+                profimage,
+                doodadlevel // Include doodadlevel in the registration data
             });
 
             console.log('Registration successful:', response.data);
@@ -43,43 +45,43 @@ const Register = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
-                <h3 className="text-2xl font-bold mb-6 text-center">Register</h3>
+        <div className="min-h-screen flex items-center justify-center bg-gray-900">
+            <div className="max-w-md w-full bg-gray-700 p-8 rounded-lg shadow-lg">
+                <h3 className="text-2xl font-bold mb-6 text-center text-white">Register</h3>
                 <form onSubmit={handleRegister} className="space-y-4">
                     <div>
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Username</label>
+                        <label className="block text-sm font-bold mb-2 text-white">Username</label>
                         <input
                             type="text"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-500"
                         />
                     </div>
                     <div>
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                        <label className="block text-sm font-bold mb-2 text-white">Email</label>
                         <input
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-500"
                         />
                     </div>
                     <div>
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                        <label className="block text-sm font-bold mb-2 text-white">Password</label>
                         <input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-500" 
                         />
                     </div>
                     <div>
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Starcraft Rank</label>
+                        <label className="block text-sm font-bold mb-2 text-white">Starcraft Rank</label>
                         <select
                             value={starcraftrank}
                             onChange={(e) => setStarcraftrank(e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-500"
                         >
                             <option value="bronze">Bronze</option>
                             <option value="silver">Silver</option>
@@ -92,11 +94,11 @@ const Register = () => {
                         </select>
                     </div>
                     <div>
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Starcraft Race</label>
+                        <label className="block text-sm font-bold mb-2 text-white">Starcraft Race</label>
                         <select
                             value={starcraftrace}
                             onChange={(e) => setStarcraftrace(e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-500"
                         >
                             <option value="terran">Terran</option>
                             <option value="zerg">Zerg</option>
@@ -105,11 +107,11 @@ const Register = () => {
                         </select>
                     </div>
                     <div>
-                        <label className="block text-gray-700 text-sm font-bold mb-2">League Rank</label>
+                        <label className="block text-sm font-bold mb-2 text-white">League Rank</label>
                         <select
                             value={leaguerank}
                             onChange={(e) => setLeaguerank(e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-500"
                         >
                             <option value="iron">Iron</option>
                             <option value="bronze">Bronze</option>
@@ -125,11 +127,11 @@ const Register = () => {
                         </select>
                     </div>
                     <div>
-                        <label className="block text-gray-700 text-sm font-bold mb-2">League Role</label>
+                        <label className="block text-sm font-bold mb-2 text-white">League Role</label>
                         <select
                             value={leaguerole}
                             onChange={(e) => setLeaguerole(e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-500"
                         >
                             <option value="top">Top</option>
                             <option value="jungle">Jungle</option>
@@ -141,11 +143,11 @@ const Register = () => {
                         </select>
                     </div>
                     <div>
-                        <label className="block text-gray-700 text-sm font-bold mb-2">League Secondary Role</label>
+                        <label className="block text-sm font-bold mb-2 text-white">League Secondary Role</label>
                         <select
                             value={leaguesecondaryrole}
                             onChange={(e) => setLeaguesecondaryrole(e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-500"
                         >
                             <option value="top">Top</option>
                             <option value="jungle">Jungle</option>
@@ -157,11 +159,11 @@ const Register = () => {
                         </select>
                     </div>
                     <div>
-                        <label className="block text-gray-700 text-sm font-bold mb-2">CS2 Elo</label>
+                        <label className="block text-sm font-bold mb-2 text-white">CS2 Elo</label>
                         <select
                             value={cs2elo}
                             onChange={(e) => setCs2elo(e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-500"
                         >
                             {[...Array(31).keys()].map(i => (
                                 <option key={i} value={i * 1000}>{i * 1000}</option>
@@ -169,12 +171,24 @@ const Register = () => {
                         </select>
                     </div>
                     <div>
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Profile Image -- URL to your image -- </label>
+                        <label className="block text-sm font-bold mb-2 text-white">Doodad Hunter Level</label>
+                        <select
+                            value={doodadlevel}
+                            onChange={(e) => setDoodadlevel(e.target.value)}
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-500"
+                        >
+                            <option value="new">New</option>
+                            <option value="experienced">Experienced</option>
+                            <option value="expert">Expert</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-bold mb-2 text-white">Profile Image URL</label>
                         <input
                             type="text"
                             value={profimage}
                             onChange={(e) => setProfimage(e.target.value)}
-                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-500"
                         />
                     </div>
                     <button
