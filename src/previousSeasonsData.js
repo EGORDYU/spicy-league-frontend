@@ -42,11 +42,12 @@ const previousSeasonsData = [
         },
 
       ],
-      winner: "Fell apart because captains couldn't coordinate.",
+      winner: "Didn't finish",
       prizepool: "$0"
     },
     {
       season: 2,
+      title: 'Spicy League: Civil War',
       teams: [
         {
           name: "Team Connecticut",
@@ -86,6 +87,7 @@ const previousSeasonsData = [
     },
     {
         season: 3,
+        title: 'The NA Apprentice: Spicy League 2',
         teams: [
           {
             name: "Team Better Than Jarod",
@@ -125,6 +127,7 @@ const previousSeasonsData = [
       },
       {
         season: 4,
+        title: 'Spicy League: Alpha',
         teams: [
           {
             name: "GRAPENOSLOVER69",
@@ -161,6 +164,7 @@ const previousSeasonsData = [
       },
       {
         season: 5,
+        title: 'Spicy League 2',
         teams: [
           {
             name: "Team Jamileon",
@@ -196,6 +200,7 @@ const previousSeasonsData = [
       },
       {
         season: 6,
+        title: 'Spicy League 3',
         teams: [
           {
             name: "THERE IS NO RECORD OF THS TOURNAMENT IF YOU HAVE INFO LET ME KNOW",
@@ -207,6 +212,7 @@ const previousSeasonsData = [
       },
       {
         season: 7,
+        title: 'Spicy League: CSGO',
         teams: [
           {
             name: "Team goldenhour",

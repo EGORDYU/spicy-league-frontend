@@ -22,7 +22,7 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center">
+        <div className="min-h-screen flex items-center justify-center bg-gray-900">
             <div className="max-w-md w-full bg-gray-700 p-8 rounded-lg shadow-md">
                 <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
                 <form onSubmit={handleLogin}>
@@ -51,6 +51,10 @@ const Login = () => {
                         Login
                     </button>
                     {error && <div className="mt-4 text-red-500 text-center">{error}</div>}
+
+                    <a href="/api/accounts/password_reset/">Forgot your password?</a>
+
+
                 </form>
             </div>
         </div>

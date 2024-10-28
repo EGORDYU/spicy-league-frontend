@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import zxcvbn from 'zxcvbn';  // Import zxcvbn for password strength checking
 import axiosInstance from '../axiosInstance';
 import { useNavigate } from 'react-router-dom';
 
@@ -6,6 +7,7 @@ const Register = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [passwordStrength, setPasswordStrength] = useState(0);  // New state for password strength
     const [starcraftrank, setStarcraftrank] = useState('n/a');
     const [starcraftrace, setStarcraftrace] = useState('n/a');
     const [leaguerank, setLeaguerank] = useState('n/a');
@@ -15,12 +17,35 @@ const Register = () => {
     const [profimage, setProfimage] = useState('https://t4.ftcdn.net/jpg/00/64/67/27/360_F_64672736_U5kpdGs9keUll8CRQ3p3YaEv2M6qkVY5.jpg');
     const [doodadlevel, setDoodadlevel] = useState('new'); // New state for doodadlevel
     const [error, setError] = useState(null);
+    const [confirmPassword, setConfirmPassword] = useState('');
+
     const navigate = useNavigate();
     const apiUrl = process.env.REACT_APP_API_URL;
 
+    const handlePasswordChange = (e) => {
+        const passwordValue = e.target.value;
+        setPassword(passwordValue);
+
+        // Evaluate password strength
+        const evaluation = zxcvbn(passwordValue);
+        setPasswordStrength(evaluation.score);  // Set password strength score (0-4)
+    };
+
     const handleRegister = async (e) => {
         e.preventDefault();
-
+    
+        // Check if passwords match
+        if (password !== confirmPassword) {
+            setError('Passwords do not match. Please try again.');
+            return;  // Stop form submission
+        }
+    
+        // Check password strength before submitting the form
+        if (passwordStrength < 2) {  // Assuming 2 is the minimum acceptable strength
+            setError('Password is too weak. Please choose a stronger password.');
+            return;  // Stop form submission
+        }
+    
         try {
             const response = await axiosInstance.post(`${apiUrl}register/`, {
                 username,
@@ -33,14 +58,32 @@ const Register = () => {
                 leaguesecondaryrole,
                 cs2elo,
                 profimage,
-                doodadlevel // Include doodadlevel in the registration data
+                doodadlevel, 
             });
-
-            console.log('Registration successful:', response.data);
+    
+            alert('Registration successful! Please check your email to verify your account.');
             navigate('/login'); // Redirect to login page after successful registration
         } catch (error) {
-            console.error('Registration error:', error.response.data);
+            console.error('Registration error:', error.response?.data);
             setError('Registration failed. Please try again.');
+        }
+    };
+    
+
+    const getPasswordStrengthLabel = () => {
+        switch (passwordStrength) {
+            case 0:
+                return 'Very Weak';
+            case 1:
+                return 'Weak';
+            case 2:
+                return 'Fair';
+            case 3:
+                return 'Good';
+            case 4:
+                return 'Strong';
+            default:
+                return '';
         }
     };
 
@@ -72,10 +115,38 @@ const Register = () => {
                         <input
                             type="password"
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={handlePasswordChange}  // Use handlePasswordChange
                             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-500" 
                         />
+                        <div className="mt-2">
+                            <div className="text-white">Strength: {getPasswordStrengthLabel()}</div>
+                            <div className="w-full bg-gray-500 rounded-full h-2">
+                                <div className={`h-2 rounded-full ${
+                                    passwordStrength >= 4
+                                        ? 'bg-green-500'
+                                        : passwordStrength >= 3
+                                        ? 'bg-yellow-500'
+                                        : passwordStrength >= 2
+                                        ? 'bg-orange-500'
+                                        : 'bg-red-500'
+                                    }`}
+                                    style={{ width: `${(passwordStrength + 1) * 20}%` }}
+                                />
+                            </div>
+                        </div>
                     </div>
+                    <div>
+    <label className="block text-sm font-bold mb-2 text-white">Confirm Password</label>
+    <input
+        type="password"
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
+        className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 bg-gray-500"
+    />
+</div>
+
+                    {error && <div className="mt-4 text-red-500 text-center">{error}</div>}
+                    {/* Other form fields */}
                     <div>
                         <label className="block text-sm font-bold mb-2 text-white">Starcraft Rank</label>
                         <select

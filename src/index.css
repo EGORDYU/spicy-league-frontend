@@ -92,7 +92,7 @@ button:hover {
   }
 }
 
-.flame-border {
+/* .flame-border {
   position: relative;
   border: 2px solid transparent;
   animation: flame 6s infinite;
@@ -112,4 +112,7 @@ button:hover {
   background: linear-gradient(45deg, rgba(255, 69, 0, 0.8), rgba(255, 140, 0, 0.6));
   filter: blur(15px);
   animation: flame 2s infinite;
-}
+} */
+
+/* styles.css */
+

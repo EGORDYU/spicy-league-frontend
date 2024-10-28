@@ -12,7 +12,7 @@ const Cseason = () => {
         const response = await axios.get(`${apiUrl}events/`);
         setEvents(response.data);
       } catch (err) {
-        console.error('Error fetching events:', err.response.data);
+        console.error('Error fetching events:', err.response?.data);
       }
     };
 
@@ -20,25 +20,31 @@ const Cseason = () => {
   }, []);
 
   return (
-    <div className="min-h-screen py-10">
-      <div className="container mx-auto px-4">
-        <h1 className="text-4xl font-bold text-center mb-10">Current Events</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {events.length > 0 ? (
-            events.map((event) => (
-              <div key={event.id} className="bg-gray-500 p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <h2 className="text-2xl font-bold mb-2 text-blue-600">
-                  <Link to={`/events/${event.id}`}>{event.name}</Link>
-                </h2>
-                <p className="">Date: {new Date(event.date).toLocaleDateString()}</p>
-                <p className="">Game: {event.game}</p>
-              </div>
-            ))
-          ) : (
-            <p className="text-center text-gray-600">No events available.</p>
-          )}
-        </div>
+    <div className="h-full p-6 bg-gray-700 rounded-lg shadow-lg">
+      <h1 className="text-4xl font-bold text-center mb-6">Current Season</h1>
+      <div className="flex flex-col justify-between">
+  {events.length > 0 ? (
+    events.map((event) => (
+      <div key={event.id} className="mb-4">
+        <h2 className="text-2xl font-bold mb-2 text-blue-600">
+          <Link to={`/events/${event.id}`} className="underline">{event.name}</Link>
+        </h2>
+        <p>Date: {new Date(event.date).toLocaleDateString()}</p>
+        <p>Game: {event.game}</p>
+        <p className="mt-4">Description: {event.description || <span className="text-gray-300 italic">To be added</span>}</p>
+        <p className="mt-2">Additional Information: {event.additional_info || <span className="text-gray-300 italic">To be added</span>}</p>
+        <p className="mt-2">Matcherino Link: {event.matcherino_link ? (
+          <a href={event.matcherino_link} className="text-blue-500 underline" target="_blank" rel="noopener noreferrer">{event.matcherino_link}</a>
+        ) : (
+          <span className="text-gray-300 italic">To be added</span>
+        )}</p>
       </div>
+    ))
+  ) : (
+    <p className="text-center text-gray-600">No events available.</p>
+  )}
+</div>
+
     </div>
   );
 };

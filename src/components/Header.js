@@ -6,6 +6,8 @@ import axios from 'axios';
 const Header = () => {
   const { user, logoutUser } = useContext(AuthContext);
   const [playerId, setPlayerId] = useState(null);
+  const [profileImage, setProfileImage] = useState(null); // New state for profile image
+  const [dropdownVisible, setDropdownVisible] = useState(false); // Dropdown visibility state
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -22,6 +24,7 @@ const Header = () => {
             });
             if (response.data.length > 0) {
               setPlayerId(response.data[0].id);
+              setProfileImage(response.data[0].profimage); // Set profile image
             }
           } catch (error) {
             console.error('Error fetching player ID:', error);
@@ -37,44 +40,64 @@ const Header = () => {
     navigate('/login');
   };
 
+  const toggleDropdown = () => {
+    setDropdownVisible(!dropdownVisible);
+  };
+
   return (
-    <nav className="bg-gray-800 p-4">
-      <ul className="flex space-x-4">
+    <nav className="bg-gray-800 p-4 relative">
+      <ul className="flex space-x-4 items-center">
         <li>
           <Link to="/" className="text-white hover:text-gray-400">Home</Link>
         </li>
         <li>
-          <Link to="/announcements" className="text-white hover:text-gray-400">Announcements</Link>
+          <Link to="/pchamps" className="text-white hover:text-gray-400">Hall of Fame</Link>
         </li>
-        <li>
-          <Link to="/pchamps" className="text-white hover:text-gray-400">Previous Champions</Link>
-        </li>
-        <li>
-          <Link to="/cseason" className="text-white hover:text-gray-400">Current Season</Link>
-        </li>
-        <li>
-          <Link to="/players" className="text-white hover:text-gray-400">Players</Link>
-        </li>
+        {/* <li>
+          <Link to="/customs" className='text-white hover:text-gray-400'>Customs</Link>
+        </li> */}
         {user ? (
           <>
-            <li>
-              <Link to={`/profile/${playerId}`} className="text-white hover:text-gray-400">Profile</Link>
+
+            <li className="ml-auto relative">
+              <div
+                onClick={toggleDropdown}
+                className="flex items-center space-x-2 cursor-pointer"
+              >
+                {profileImage && (
+                  <img
+                    src={profileImage}
+                    alt="Profile"
+                    className="w-8 h-8 rounded-full"
+                  />
+                )}
+                <span className="text-white">Welcome, {user.username}</span>
+                {/* Dropdown icon */}
+                <span className="text-white">▼</span> {/* Simple caret icon */}
+              </div>
+              {/* Dropdown menu */}
+              {dropdownVisible && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20">
+                  <Link
+                    to={`/profile/${playerId}`}
+                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  >
+                    Edit Profile
+                  </Link>
+                  <a
+                    href="/"
+                    onClick={handleLogout}
+                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  >
+                    Logout
+                  </a>
+                </div>
+              )}
             </li>
-            <li>
-              <span className="text-white">Welcome, {user.username}</span>
-            </li>
-            <li>
-  <button
-    onClick={handleLogout}
-    className="px-4 py-2 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75 transition duration-300"
-  >
-    Logout
-  </button>
-</li>
           </>
         ) : (
           <>
-            <li>
+            <li className="ml-auto">
               <Link to="/login" className="text-white hover:text-gray-400">Login</Link>
             </li>
             <li>

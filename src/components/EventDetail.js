@@ -5,7 +5,7 @@ import AuthContext from '../AuthContext';
 
 const EventDetail = () => {
   const { id } = useParams();
-  const { authTokens } = useContext(AuthContext);
+  const { authTokens, user } = useContext(AuthContext);
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -17,8 +17,15 @@ const EventDetail = () => {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const response = await axios.get(`${apiUrl}events/${id}/`);
+        const response = await axios.get(`${apiUrl}events/${id}/`, {
+          headers: authTokens ? {
+            Authorization: `Bearer ${authTokens.access}`,
+          } : {},
+        });
         setEvent(response.data);
+        if (authTokens && response.data.players.some(player => player.id === user.user_id)) {
+          setIsSignedUp(true);
+        }
         setLoading(false);
       } catch (err) {
         console.error('Error fetching event:', err.response?.data || err.message);
@@ -26,7 +33,7 @@ const EventDetail = () => {
         setLoading(false);
       }
     };
-
+  
     const fetchTeams = async () => {
       try {
         const response = await axios.get(`${apiUrl}teams/?event=${id}`);
@@ -36,15 +43,22 @@ const EventDetail = () => {
         setError('Error fetching teams.');
       }
     };
-
-    fetchEvent();
-    fetchTeams();
-  }, [id]);
-
-  useEffect(() => {
-    console.log('Sort criteria changed:', sortCriteria);
-  }, [sortCriteria]);
-
+  
+    const fetchData = () => {
+      fetchEvent();
+      fetchTeams();
+    };
+  
+    fetchData();
+  
+    // Poll every 5 seconds
+    const intervalId = setInterval(fetchData, 5000);
+  
+    // Cleanup on component unmount
+    return () => clearInterval(intervalId);
+  }, [id, authTokens, user]);
+  
+  
   const handleSignup = async () => {
     if (!authTokens) {
       setError('You need to be logged in to sign up for an event.');
@@ -84,7 +98,6 @@ const EventDetail = () => {
       setError('Error canceling signup for event.');
     }
   };
-  
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -205,9 +218,21 @@ const EventDetail = () => {
   };
   
 
-  const renderPlayerDetails = (player) => (
-    <div key={player.id} className="border border-gray-300 rounded-lg p-1 bg-gray-700 flex flex-col items-start w-48">
-      <Link to={`/players/${player.id}`} className="text-xl font-bold text-blue-600 hover:underline mb-1">{player.name}</Link>
+  const renderPlayerDetails = (player, isOnTeam) => (
+    <div 
+      key={player.id} 
+      className={`border border-gray-300 rounded-lg p-2 ${isOnTeam ? 'bg-gray-500 opacity-50' : 'bg-gray-700'} flex flex-col items-start w-48`}
+    >
+      <div className="flex items-center mb-1">
+        <img 
+          src={player.profimage} 
+          alt={`${player.name}'s profile`} 
+          className="w-8 h-8 rounded-full mr-2"
+        />
+        <Link to={`/players/${player.id}`} className={`text-xl font-bold ${isOnTeam ? 'text-gray-400' : 'text-blue-600 hover:underline'}`}>
+          {player.name}
+        </Link>
+      </div>
       <ul className="list-none p-0 text-sm space-y-1">
         {(event.game.includes('LoL')) && (
           <>
@@ -226,38 +251,72 @@ const EventDetail = () => {
           <li className="flex items-center">CS2 Elo: {player.cs2elo}</li>
         )}
         {(event.game.includes('Doodad')) && (
-          <li className='flex items-center'>Doodad Skill: {player.doodadlevel}</li>
+          <li className="flex items-center">Doodad Skill: {player.doodadlevel}</li>
         )}
       </ul>
     </div>
   );
   
+
+  const teamPlayerIds = new Set(teams.flatMap(team => team.players.flatMap(user => user.players.map(p => p.id))));
+
+  
+  const sortedAndStyledPlayers = () => {
+    // Gather IDs of players already assigned to teams
+    
+    
+    // Sort players according to criteria, placing team players at the end
+    const sortedPlayers = sortPlayers(event.players.flatMap(user => user.players))
+      .sort((a, b) => {
+        const aInTeam = teamPlayerIds.has(a.id);
+        const bInTeam = teamPlayerIds.has(b.id);
+        
+        // If both are in or out of a team, sort by criteria; otherwise, team players go last
+        if (aInTeam && !bInTeam) return 1;
+        if (!aInTeam && bInTeam) return -1;
+        return 0;
+      });
+      
+    return sortedPlayers;
+  };
   
 
   
 
   const renderPlayerName = (player) => (
-    <li key={player.id} className="mb-2">
-      <Link to={`/players/${player.id}`} className="text-xl font-bold text-blue-600 hover:underline">{player.name}</Link>
+    <li key={player.id} className="mb-2 flex items-center">
+      <img 
+        src={player.profimage} 
+        alt={`${player.name}'s profile`} 
+        className="w-8 h-8 rounded-full mr-2"
+      />
+      <Link to={`/players/${player.id}`} className="text-xl font-bold text-blue-600 hover:underline">
+        {player.name}
+      </Link>
     </li>
   );
+  
 
   return (
+    <div className="bg-gray-900 min-h-screen text-white">
     <div>
       <h1>{event.name}</h1>
       <p>Date: {event.date}</p>
       <p>Game: {event.game}</p>
       <p>Team Size: {event.teamsize}</p>
 
-
-      <button
-        onClick={isSignedUp ? cancelSignup : handleSignup}
-        className={`mt-4 w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
-          isSignedUp ? 'bg-red-700 hover:bg-red-800' : 'bg-blue-700 hover:bg-blue-800'
-        }`}
-      >
-        {isSignedUp ? 'Cancel Signup' : 'Sign Up'}
-      </button>
+      {authTokens ? (
+        <button
+          onClick={isSignedUp ? cancelSignup : handleSignup}
+          className={`mt-4 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
+            isSignedUp ? 'bg-red-700 hover:bg-red-800' : 'bg-blue-700 hover:bg-blue-800'
+          }`}
+        >
+          {isSignedUp ? 'Cancel Signup' : 'Sign Up'}
+        </button>
+      ) : (
+        <p>You need to be logged in to sign up for the event.</p>
+      )}
 
       <div className="flex justify-end mt-4">
         <select
@@ -274,28 +333,34 @@ const EventDetail = () => {
 
       <h2>Signed up players</h2>
       {event.players.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-9 gap-0">
-          {sortPlayers(event.players.flatMap(user => user.players)).map(player => renderPlayerDetails(player))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8 gap-0">
+          {sortedAndStyledPlayers().map(player => renderPlayerDetails(player, teamPlayerIds.has(player.id)))}
         </div>
       ) : (
         <p>No players signed up yet.</p>
       )}
 
-      <h2>Teams</h2>
-      {teams.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          {teams.filter(team => team.event === parseInt(id)).map(team => (
-            <div key={team.id} className="border border-gray-300 rounded-lg p-4 bg-white shadow-md">
-              <h3 className="team-name text-2xl font-semibold mb-4">{team.name}</h3>
-              <ul className="list-disc pl-5 space-y-1 text-gray-700">
-                {team.players.flatMap(user => user.players).map(player => renderPlayerName(player))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p>No teams available.</p>
-      )}
+<h2>Teams</h2>
+{teams.length > 0 ? (
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 ">
+    {teams.filter(team => team.event === parseInt(id)).map(team => (
+      <div key={team.id} className="border border-gray-300 rounded-lg p-4 shadow-md bg-gray-700">
+        <h3 className="team-name text-2xl font-semibold mb-4">{team.name}</h3>
+        <ul className="list-disc pl-5 space-y-1 text-gray-700">
+          {team.players.flatMap(user => user.players).map(player => renderPlayerName(player))}
+        </ul>
+        {/* Display players' names in italics and barely visible */}
+        <p className="text-gray-400 italic text-xs mt-4">
+          {team.players.flatMap(user => user.players).map(player => player.name).join(', ')}
+        </p>
+      </div>
+    ))}
+  </div>
+) : (
+  <p>No teams available.</p>
+)}
+
+    </div>
     </div>
   );
 };

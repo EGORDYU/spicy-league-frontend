@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import AuthContext from '../AuthContext';
 
 const Profile = () => {
-  const { authTokens, user } = useContext(AuthContext);
+  const { authTokens, user, logoutUser } = useContext(AuthContext);
   const { userId } = useParams(); // This should actually be playerId
   const apiUrl = process.env.REACT_APP_API_URL;
+  const navigate = useNavigate();
   const [player, setPlayer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -114,7 +115,26 @@ const Profile = () => {
       }
     }
   };
-
+  const handleDeleteAccount = async () => {
+    if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+      try {
+        await axios.delete(`${apiUrl}players/${player.id}/`, {
+          headers: {
+            Authorization: `Bearer ${authTokens.access}`,
+          },
+        });
+        alert('Your account has been deleted.');
+        logoutUser(); // Log the user out after account deletion
+        navigate('/'); // Redirect to home page
+      } catch (err) {
+        if (err.response) {
+          setError(`Error deleting account: ${err.response.status} - ${err.response.data.detail}`);
+        } else {
+          setError('Error deleting account.');
+        }
+      }
+    }
+  };
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
@@ -242,7 +262,24 @@ const Profile = () => {
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-500"
           />
         </div>
-        {isOwner && <button type="submit" className="mt-4 w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Save</button>}
+        
+        {isOwner && (
+          <>
+            <button
+              type="submit"
+              className="mt-4 w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={handleDeleteAccount}
+              className="mt-4 w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+            >
+              Delete Account
+            </button>
+          </>
+        )}
       </form>
     </div>
   );
